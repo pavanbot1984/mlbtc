@@ -1,10 +1,10 @@
 import joblib
 import pandas as pd
 
-# Load model once
+# Load model
 model = joblib.load("trend_model.pkl")
 
-# Debug: Print expected features
+# Print feature names (optional debug)
 print("📋 Expected features:")
 print(model.feature_names_in_)
 
@@ -22,7 +22,7 @@ def get_trend_decision(input_data):
     ml_trend = model.predict(X)[0]
     confidence = float(model.predict_proba(X).max())
 
-    # Check for proximity to any liquidation zone
+    # Check if current price is near a liquidation zone
     near_liq_zone = any(abs(current_spot - z) <= 300 for z in liquidation_zones)
 
     # Decision logic
@@ -34,15 +34,4 @@ def get_trend_decision(input_data):
     elif strike_breached == "PUT" and ml_trend == "bullish" and confidence >= 0.7:
         action = "hedge_long"
         reason = "PUT breached, bullish trend confirmed"
-    elif ml_trend == "neutral" and not reentry_done and within_window:
-        action = "reenter"
-        reason = "Neutral trend and reentry window open"
-
-    return {
-        "ml_trend": ml_trend,
-        "confidence": round(confidence, 3),
-        "action": action,
-        "reason": reason,
-        "whale_signal": whale_signal,
-        "near_liquidation_zone": near_liq_zone
-    }
+    elif ml
