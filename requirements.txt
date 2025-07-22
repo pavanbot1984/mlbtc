@@ -1,0 +1,17 @@
+pandas
+requests
+scikit-learn
+xgboost
+joblib
+fastapi
+uvicorn
+streamlit
+schedule
+matplotlib
+seaborn
+plotly
+pandas
+numpy
+ta
+scikit-learn
+joblib
