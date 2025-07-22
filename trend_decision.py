@@ -34,4 +34,13 @@ def get_trend_decision(input_data):
     elif strike_breached == "PUT" and ml_trend == "bullish" and confidence >= 0.7:
         action = "hedge_long"
         reason = "PUT breached, bullish trend confirmed"
-    elif ml
+    elif ml_trend == "neutral" and not reentry_done and within_window and not near_liq_zone:
+        action = "reenter_leg"
+        reason = "Neutral ML signal, safe to re-enter exited leg"
+    
+    return {
+        "trend": ml_trend,
+        "confidence": confidence,
+        "action": action,
+        "reason": reason
+    }
