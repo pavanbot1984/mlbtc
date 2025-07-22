@@ -1,54 +1,36 @@
-# ===============================================
-# File: test_trend_decision.py
-# Purpose: Run ML trend decision using input_data.json
-# - Reads input features from local JSON file
-# - Calls get_trend_decision() with structured data
-# - Prints decision table and sends Telegram alert if needed
-# ===============================================
-
-import json
-import requests
+import pandas as pd
 from trend_decision import get_trend_decision
-from tabulate import tabulate
 
-# Telegram config
-BOT_TOKEN = '8046031500:AAGpTEu6uf6-I5fqOQ2h3SqBShZzs1bkSe8'
-CHAT_ID = '6614671189'
-
-def send_telegram_alert(message):
-    url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
-    payload = {
-        "chat_id": CHAT_ID,
-        "text": message,
-        "parse_mode": "Markdown"
+# Example input_data (static, replace with live values later if needed)
+input_data = {
+    "features": {
+        "return_1h": 0.015,
+        "rsi_14": 68.2,
+        "macd": 0.45,
+        "macd_signal": 0.35,
+        "bb_width": 0.055,
+        "volume": 210000,
+        "volume_ema_20": 190000,
+        "roc": 1.02,
+        "stoch_rsi": 0.75,
+        "supertrend_signal": 1
+    },
+    "strike_breached": "PUT",
+    "current_spot_price": 119200,
+    "reentry_done": False,
+    "is_within_reentry_window": True,
+    "liquidation_zones": [117000, 121000],
+    "whale_activity": {
+        "signal_strength": 0.6
     }
-    try:
-        response = requests.post(url, json=payload)
-        if response.status_code == 200:
-            print("✅ Telegram alert sent.")
-        else:
-            print(f"❌ Failed to send Telegram alert: {response.text}")
-    except Exception as e:
-        print(f"❌ Exception during Telegram alert: {e}")
+}
 
-# 🔄 Load input_data from JSON file
-with open("input_data.json", "r") as f:
-    input_data = json.load(f)
-
-# 🚀 Run trend decision logic
-result = get_trend_decision(input_data)
-
-# 📋 Display result
-table = tabulate(result.items(), headers=["Field", "Value"], tablefmt="fancy_grid")
-print(table)
-
-# 🚨 Alert if confidence ≥ 0.6
-msg = (
-    f"📊 *ML Trend Alert*\n"
-    f"*Trend:* `{result['ml_trend']}`\n"
-    f"*Confidence:* `{result['confidence']}`\n"
-    f"*Action:* `{result['action']}`\n"
-    f"*Whale Signal:* `{result['whale_signal']}`\n"
-    f"*Near Liq Zone:* `{result['near_liquidation_zone']}`"
-)
-send_telegram_alert(msg)
+# Run prediction
+try:
+    decision = get_trend_decision(input_data)
+    print("✅ Trend Decision Result:")
+    for key, value in decision.items():
+        print(f"{key}: {value}")
+except Exception as e:
+    print("❌ ERROR in trend decision logic:")
+    print(str(e))
