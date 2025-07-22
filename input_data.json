@@ -1,0 +1,22 @@
+{
+  "features": {
+    "return_1h": 0.012,
+    "rsi_14": 67.5,
+    "macd": 0.8,
+    "macd_signal": 0.6,
+    "bb_width": 0.045,
+    "volume": 153000,
+    "volume_ema_20": 132000,
+    "roc": 1.1,
+    "stoch_rsi": 0.88,
+    "supertrend_signal": 1
+  },
+  "strike_breached": "PUT",
+  "current_spot_price": 119200,
+  "reentry_done": false,
+  "is_within_reentry_window": true,
+  "liquidation_zones": [117000, 121000],
+  "whale_activity": {
+    "signal_strength": 0.6
+  }
+}
